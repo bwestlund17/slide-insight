@@ -108,12 +108,6 @@ const AdminLoginPage: React.FC = () => {
               </button>
             </div>
           </form>
-
-          <div className="mt-6">
-            <p className="text-center text-sm text-slate-500">
-              Demo credentials: admin@example.com / admin
-            </p>
-          </div>
         </div>
       </div>
     </div>
