@@ -32,7 +32,10 @@ export default function ExplorePage() {
   // Trigger initial scraping if no presentations exist
   useEffect(() => {
     if (!presentationsLoading && presentations.length === 0) {
-      triggerInitialScraping().catch(console.error);
+      triggerInitialScraping().catch(error => {
+        console.error('Failed to trigger initial scraping:', error);
+        // Optionally show an error message to the user
+      });
     }
   }, [presentationsLoading, presentations.length]);
 

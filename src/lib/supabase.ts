@@ -247,13 +247,27 @@ export async function deleteStorageFile(path: string) {
 // Function to trigger initial scraping
 export async function triggerInitialScraping() {
   try {
-    const { data, error } = await supabase.functions.invoke('trigger-scrape', {
-      body: { mode: 'initial' }
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/trigger-scrape`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ mode: 'initial' })
+      }
+    );
 
-    if (error) {
-      console.error('Error triggering initial scraping:', error);
-      throw error;
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to trigger initial scraping: ${errorText}`);
+    }
+
+    const data = await response.json();
+    
+    if (!data.success) {
+      throw new Error(data.error || 'Failed to trigger initial scraping');
     }
 
     return data;
