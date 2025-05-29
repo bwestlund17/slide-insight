@@ -248,10 +248,7 @@ export async function deleteStorageFile(path: string) {
 export async function triggerInitialScraping() {
   try {
     const { data, error } = await supabase.functions.invoke('trigger-scrape', {
-      body: { mode: 'initial' },
-      headers: {
-        Authorization: `Bearer ${supabaseAnonKey}`
-      }
+      body: { mode: 'initial' }
     });
 
     if (error) {
