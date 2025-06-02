@@ -68,6 +68,14 @@ const Header: React.FC = () => {
               Presentations
             </Link>
             <Link 
+              to="/sequoia/sequoia-capital-pitch-deck" 
+              className={`text-sm font-medium transition-colors hover:text-primary-600 ${
+                location.pathname.startsWith('/sequoia/') ? 'text-primary-600' : 'text-slate-700'
+              }`}
+            >
+              Sequoia Template
+            </Link>
+            <Link 
               to="/ma-decks" 
               className={`text-sm font-medium transition-colors hover:text-primary-600 ${
                 location.pathname === '/ma-decks' || location.pathname.startsWith('/ma-decks/') ? 'text-primary-600' : 'text-slate-700'
@@ -164,6 +172,14 @@ const Header: React.FC = () => {
               >
                 <FileText className="mr-3 h-5 w-5 text-slate-500" />
                 Explore Presentations
+              </Link>
+              <Link 
+                to="/sequoia/sequoia-capital-pitch-deck" 
+                className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-slate-100"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <FileText className="mr-3 h-5 w-5 text-blue-500" />
+                Sequoia Template
               </Link>
               <Link 
                 to="/ma-decks" 

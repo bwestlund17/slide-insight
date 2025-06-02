@@ -46,6 +46,11 @@ const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/sequoia/sequoia-capital-pitch-deck" className="text-sm text-slate-600 hover:text-primary-600">
+                  Sequoia Template
+                </Link>
+              </li>
+              <li>
                 <Link to="/ma-decks" className="text-sm text-slate-600 hover:text-primary-600">
                   M&A Decks
                 </Link>

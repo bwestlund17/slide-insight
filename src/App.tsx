@@ -15,6 +15,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import MaDecksPage from './pages/MaDecksPage';
 import MaDeckViewerPage from './pages/MaDeckViewerPage';
 import MigrationPage from './pages/MigrationPage';
+import SequoiaPresentationPage from './pages/SequoiaPresentationPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,6 +36,7 @@ function App() {
           <Route path="presentations" element={<PresentationsListPage />} />
           <Route path="search" element={<SearchResultsPage />} />
           <Route path="presentation/:id" element={<PresentationPage />} />
+          <Route path="sequoia/:id" element={<SequoiaPresentationPage />} />
           <Route path="company/:symbol" element={<CompanyPage />} />
           <Route path="company/:symbol/presentations" element={<CompanyPresentationsPage />} />
           <Route path="ma-decks" element={<MaDecksPage />} />

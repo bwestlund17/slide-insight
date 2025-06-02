@@ -1,38 +1,167 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PresentationGrid from '../components/PresentationGrid';
+import PresentationCollection from '../components/PresentationCollection';
 import { Search, ChevronRight, ArrowRight, BarChart2, Calendar, Tag } from 'lucide-react';
 import { usePresentations, useIndustryStats } from '../hooks/useQueries';
+
+// Mock featured presentations for Sequoia style showcase
+const featuredPresentations = [
+  {
+    id: 'sequoia-capital-pitch-deck',
+    title: 'Sequoia Capital Pitch Deck Template',
+    companyName: 'Sequoia Capital',
+    thumbnailUrl: 'https://picsum.photos/seed/sequoia/800/600',
+    date: '2023-08-15',
+    viewCount: 24863,
+    slideCount: 20,
+    isBookmarked: false,
+    isFeatured: true
+  },
+  {
+    id: 'airbnb-pitch-deck',
+    title: 'Airbnb Pitch Deck',
+    companyName: 'Airbnb',
+    thumbnailUrl: 'https://picsum.photos/seed/airbnb/800/600',
+    date: '2009-03-21',
+    viewCount: 56932,
+    slideCount: 14,
+    isBookmarked: true
+  },
+  {
+    id: 'uber-pitch-deck',
+    title: 'Uber Pitch Deck',
+    companyName: 'Uber',
+    thumbnailUrl: 'https://picsum.photos/seed/uber/800/600',
+    date: '2008-10-15',
+    viewCount: 48123,
+    slideCount: 25,
+    isNew: true
+  },
+  {
+    id: 'facebook-pitch-deck',
+    title: 'Facebook Series B Pitch Deck',
+    companyName: 'Facebook',
+    thumbnailUrl: 'https://picsum.photos/seed/facebook/800/600',
+    date: '2005-05-26',
+    viewCount: 39754,
+    slideCount: 18
+  },
+  {
+    id: 'linkedin-pitch-deck',
+    title: 'LinkedIn Series B Pitch Deck',
+    companyName: 'LinkedIn',
+    thumbnailUrl: 'https://picsum.photos/seed/linkedin/800/600',
+    date: '2004-08-07',
+    viewCount: 35871,
+    slideCount: 37
+  }
+];
+
+const trendingPresentations = [
+  {
+    id: 'tesla-investor-day',
+    title: 'Tesla Investor Day 2023',
+    companyName: 'Tesla',
+    thumbnailUrl: 'https://picsum.photos/seed/tesla/800/600',
+    date: '2023-03-01',
+    viewCount: 89542,
+    slideCount: 42,
+    isNew: true
+  },
+  {
+    id: 'amazon-shareholder',
+    title: 'Amazon Annual Shareholder Meeting',
+    companyName: 'Amazon',
+    thumbnailUrl: 'https://picsum.photos/seed/amazon/800/600',
+    date: '2023-05-24',
+    viewCount: 67321,
+    slideCount: 35
+  },
+  {
+    id: 'apple-q3-2023',
+    title: 'Apple Q3 2023 Earnings Call',
+    companyName: 'Apple',
+    thumbnailUrl: 'https://picsum.photos/seed/apple/800/600',
+    date: '2023-08-03',
+    viewCount: 72156,
+    slideCount: 28,
+    isBookmarked: true
+  },
+  {
+    id: 'microsoft-build',
+    title: 'Microsoft Build 2023 Keynote',
+    companyName: 'Microsoft',
+    thumbnailUrl: 'https://picsum.photos/seed/microsoft/800/600',
+    date: '2023-05-23',
+    viewCount: 63489,
+    slideCount: 52
+  },
+  {
+    id: 'google-io',
+    title: 'Google I/O 2023 Presentation',
+    companyName: 'Google',
+    thumbnailUrl: 'https://picsum.photos/seed/google/800/600',
+    date: '2023-05-10',
+    viewCount: 81245,
+    slideCount: 47
+  }
+];
+
+const recentPresentations = [
+  {
+    id: 'nvidia-computex',
+    title: 'NVIDIA Computex 2023 Keynote',
+    companyName: 'NVIDIA',
+    thumbnailUrl: 'https://picsum.photos/seed/nvidia/800/600',
+    date: '2023-05-29',
+    viewCount: 52148,
+    slideCount: 39,
+    isNew: true
+  },
+  {
+    id: 'shopify-reunite',
+    title: 'Shopify Reunite 2023',
+    companyName: 'Shopify',
+    thumbnailUrl: 'https://picsum.photos/seed/shopify/800/600',
+    date: '2023-05-05',
+    viewCount: 38742,
+    slideCount: 31
+  },
+  {
+    id: 'stripe-sessions',
+    title: 'Stripe Sessions 2023',
+    companyName: 'Stripe',
+    thumbnailUrl: 'https://picsum.photos/seed/stripe/800/600',
+    date: '2023-04-27',
+    viewCount: 41863,
+    slideCount: 34,
+    isBookmarked: true
+  },
+  {
+    id: 'zoom-keynote',
+    title: 'Zoom Platform Innovations 2023',
+    companyName: 'Zoom',
+    thumbnailUrl: 'https://picsum.photos/seed/zoom/800/600',
+    date: '2023-04-13',
+    viewCount: 45289,
+    slideCount: 29
+  },
+  {
+    id: 'salesforce-dreamforce',
+    title: 'Salesforce Dreamforce 2023 Keynote',
+    companyName: 'Salesforce',
+    thumbnailUrl: 'https://picsum.photos/seed/salesforce/800/600',
+    date: '2023-09-12',
+    viewCount: 37926,
+    slideCount: 43,
+    isFeatured: true
+  }
+];
 
 const HomePage: React.FC = () => {
   const { data: presentations = [], isLoading: presentationsLoading } = usePresentations();
   const { data: industries = [], isLoading: industriesLoading } = useIndustryStats();
-
-  // Get recent presentations (last 7 days)
-  const recentPresentations = presentations
-    .filter(p => {
-      const presentationDate = new Date(p.date);
-      const sevenDaysAgo = new Date();
-      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      return presentationDate >= sevenDaysAgo;
-    })
-    .slice(0, 5);
-
-  // Get trending presentations (by view count)
-  const trendingPresentations = [...presentations]
-    .sort((a, b) => (b.view_count || 0) - (a.view_count || 0))
-    .slice(0, 5);
-
-  // Get featured presentations (with highest view counts and recent dates)
-  const featuredPresentations = [...presentations]
-    .sort((a, b) => {
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
-      const viewDiff = (b.view_count || 0) - (a.view_count || 0);
-      const dateDiff = dateB.getTime() - dateA.getTime();
-      return viewDiff + dateDiff / (1000 * 60 * 60 * 24); // Weight both factors
-    })
-    .slice(0, 3);
 
   return (
     <div className="fade-in">
@@ -83,7 +212,40 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Featured Presentations */}
+      {/* Sequoia Style Presentation Section */}
+      <section className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-900">Sequoia Capital Presentation Collection</h2>
+            <p className="mt-2 text-gray-600">
+              Explore our curated collection of pitch decks and investor presentations in Sequoia-style format
+            </p>
+          </div>
+          
+          <PresentationCollection
+            title="Featured Presentations"
+            subtitle="Our most popular startup pitch decks and investor presentations"
+            presentations={featuredPresentations}
+            viewAllLink="/sequoia/presentations"
+          />
+          
+          <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <PresentationCollection
+              title="Trending Now"
+              presentations={trendingPresentations.slice(0, 3)}
+              viewAllLink="/sequoia/trending"
+            />
+            
+            <PresentationCollection
+              title="Recently Added"
+              presentations={recentPresentations.slice(0, 3)}
+              viewAllLink="/sequoia/recent"
+            />
+          </div>
+        </div>
+      </section>
+      
+      {/* Original Featured Presentations Section */}
       <section className="bg-white py-12">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="flex justify-between items-center mb-6">
@@ -110,7 +272,7 @@ const HomePage: React.FC = () => {
             </div>
           ) : (
             <PresentationGrid 
-              presentations={featuredPresentations} 
+              presentations={presentations.slice(0, 6)} 
               columns={3} 
               variant="featured" 
             />
@@ -186,7 +348,7 @@ const HomePage: React.FC = () => {
                     </div>
                   ))
                 ) : (
-                  recentPresentations.map(presentation => (
+                  presentations.slice(0, 5).map(presentation => (
                     <div key={presentation.id} className="card hover:bg-slate-50 transition-colors">
                       <div className="p-3">
                         <Link 
@@ -241,7 +403,10 @@ const HomePage: React.FC = () => {
                     </div>
                   ))
                 ) : (
-                  trendingPresentations.map(presentation => (
+                  presentations
+                    .slice(0, 5)
+                    .sort((a, b) => (b.view_count || 0) - (a.view_count || 0))
+                    .map(presentation => (
                     <div key={presentation.id} className="card hover:bg-slate-50 transition-colors">
                       <div className="p-3">
                         <Link 
@@ -258,7 +423,7 @@ const HomePage: React.FC = () => {
                             {presentation.companies?.name}
                           </Link>
                           <span className="text-xs text-slate-500">
-                            {presentation.view_count?.toLocaleString()} views
+                            {presentation.view_count?.toLocaleString() || 0} views
                           </span>
                         </div>
                       </div>
