@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Database, Users, FileText, Settings, LogOut } from 'lucide-react';
+import { Database, Users, FileText, Settings, LogOut, Download } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import ScrapingStatusPage from './ScrapingStatusPage';
 import CompaniesPage from './CompaniesPage';
 import PresentationsPage from './PresentationsPage';
 import SettingsPage from './SettingsPage';
+import MigrationPage from './MigrationPage';
 
-type ActiveTab = 'scraping' | 'companies' | 'presentations' | 'settings';
+type ActiveTab = 'scraping' | 'companies' | 'presentations' | 'settings' | 'migration';
 
 const AdminDashboardPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('scraping');
@@ -34,6 +35,8 @@ const AdminDashboardPage: React.FC = () => {
         return <PresentationsPage />;
       case 'settings':
         return <SettingsPage />;
+      case 'migration':
+        return <MigrationPage />;
     }
   };
 
@@ -96,6 +99,17 @@ const AdminDashboardPage: React.FC = () => {
                 >
                   <FileText className="h-5 w-5 mr-3" />
                   Presentations
+                </button>
+                <button 
+                  onClick={() => setActiveTab('migration')}
+                  className={`flex items-center px-4 py-3 text-sm font-medium text-left ${
+                    activeTab === 'migration' 
+                      ? 'text-primary-600 bg-primary-50 border-l-2 border-primary-600' 
+                      : 'text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  <Download className="h-5 w-5 mr-3" />
+                  Storage Migration
                 </button>
                 <button 
                   onClick={() => setActiveTab('settings')}

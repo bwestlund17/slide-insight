@@ -14,6 +14,7 @@ import AdminDashboardPage from './pages/AdminDashboardPage';
 import NotFoundPage from './pages/NotFoundPage';
 import MaDecksPage from './pages/MaDecksPage';
 import MaDeckViewerPage from './pages/MaDeckViewerPage';
+import MigrationPage from './pages/MigrationPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,6 +41,7 @@ function App() {
           <Route path="ma-decks/:id" element={<MaDeckViewerPage />} />
           <Route path="admin" element={<AdminLoginPage />} />
           <Route path="admin/dashboard" element={<AdminDashboardPage />} />
+          <Route path="admin/migration" element={<MigrationPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
