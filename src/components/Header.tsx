@@ -34,6 +34,17 @@ const Header: React.FC = () => {
     setIsUserMenuOpen(!isUserMenuOpen);
   };
 
+  // Check if the current path is for the Slidebook editor or presentation app
+  const isSlideBookPage = location.pathname.startsWith('/dashboard') || 
+                         location.pathname.startsWith('/editor') || 
+                         location.pathname.startsWith('/templates') ||
+                         location.pathname.startsWith('/account');
+
+  // If on Slidebook pages, use the Slidebook header
+  if (isSlideBookPage) {
+    return null; // We'll render the Slidebook-specific header in those routes
+  }
+
   return (
     <header 
       className={`sticky top-0 z-50 w-full transition-all duration-200 ${
@@ -121,13 +132,13 @@ const Header: React.FC = () => {
               <div className="flex items-center space-x-3">
                 <button 
                   className="text-sm font-medium text-slate-700 hover:text-primary-600 transition-colors"
-                  onClick={() => alert('Sign in feature not implemented in demo')}
+                  onClick={() => navigate('/auth/login')}
                 >
                   Sign In
                 </button>
                 <button 
                   className="btn btn-primary px-4 py-2"
-                  onClick={() => alert('Sign up feature not implemented in demo')}
+                  onClick={() => navigate('/auth/signup')}
                 >
                   Sign Up
                 </button>
@@ -238,7 +249,7 @@ const Header: React.FC = () => {
                 <button 
                   className="w-full btn btn-primary px-4 py-2"
                   onClick={() => {
-                    alert('Sign up feature not implemented in demo');
+                    navigate('/auth/signup');
                     setMobileMenuOpen(false);
                   }}
                 >

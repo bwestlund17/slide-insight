@@ -16,6 +16,11 @@ import MaDecksPage from './pages/MaDecksPage';
 import MaDeckViewerPage from './pages/MaDeckViewerPage';
 import MigrationPage from './pages/MigrationPage';
 import SequoiaPresentationPage from './pages/SequoiaPresentationPage';
+import DashboardPage from './pages/DashboardPage';
+import EditorPage from './pages/EditorPage';
+import TemplatesPage from './pages/TemplatesPage';
+import AccountPage from './pages/AccountPage';
+import AuthPage from './pages/AuthPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,6 +49,13 @@ function App() {
           <Route path="admin" element={<AdminLoginPage />} />
           <Route path="admin/dashboard" element={<AdminDashboardPage />} />
           <Route path="admin/migration" element={<MigrationPage />} />
+          
+          {/* Slidebook specific routes */}
+          <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="editor/:id" element={<EditorPage />} />
+          <Route path="templates" element={<TemplatesPage />} />
+          <Route path="account" element={<AccountPage />} />
+          <Route path="auth/:mode" element={<AuthPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
