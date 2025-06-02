@@ -3,20 +3,7 @@ import { Link } from 'react-router-dom';
 import { FileText, Download, Search, X, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { format } from 'date-fns';
-
-interface Presentation {
-  id: string;
-  title: string;
-  date: string;
-  company: {
-    name: string;
-    symbol: string;
-    industry: string;
-  };
-  description: string;
-  thumbnail_url: string;
-  url: string;
-}
+import { Presentation } from '../types';
 
 const ITEMS_PER_PAGE = 20;
 
@@ -45,7 +32,7 @@ const PresentationsListPage: React.FC = () => {
           title,
           date,
           company_symbol,
-          description,
+          summary,
           thumbnail_url,
           url,
           companies!fk_company_symbol (
@@ -97,8 +84,7 @@ const PresentationsListPage: React.FC = () => {
       // Transform the data to match the Presentation interface
       const transformedData = (data || []).map(p => ({
         ...p,
-        company: p.companies,
-        description: p.description || ''
+        company: p.companies
       }));
       
       setPresentations(transformedData);
@@ -294,10 +280,10 @@ const PresentationsListPage: React.FC = () => {
                       <div className="flex items-start justify-between">
                         <div>
                           <h3 className="font-medium text-slate-900">
-                            {presentation.company.name}
+                            {presentation.companies?.name}
                           </h3>
                           <p className="text-sm text-slate-500">
-                            {presentation.company.industry}
+                            {presentation.companies?.industry}
                           </p>
                         </div>
                         <span className="text-sm text-slate-500">
