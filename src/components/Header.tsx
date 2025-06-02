@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Search, Menu, X, FileText, BarChart2, Building2, Bell } from 'lucide-react';
+import { Search, Menu, X, FileText, BarChart2, Building2, Bell, Shuffle, Bookmark, User, LogIn } from 'lucide-react';
 import Logo from './Logo';
 
 const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const isLoggedIn = false; // Replace with actual auth state
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,6 +28,10 @@ const Header: React.FC = () => {
       setSearchQuery('');
       setMobileMenuOpen(false);
     }
+  };
+
+  const toggleUserMenu = () => {
+    setIsUserMenuOpen(!isUserMenuOpen);
   };
 
   return (
@@ -48,7 +54,7 @@ const Header: React.FC = () => {
             <Link 
               to="/explore" 
               className={`text-sm font-medium transition-colors hover:text-primary-600 ${
-                location.pathname === '/explore' || location.pathname === '/presentations' ? 'text-primary-600' : 'text-slate-700'
+                location.pathname === '/explore' ? 'text-primary-600' : 'text-slate-700'
               }`}
             >
               Explore
@@ -60,6 +66,14 @@ const Header: React.FC = () => {
               }`}
             >
               Presentations
+            </Link>
+            <Link 
+              to="/ma-decks" 
+              className={`text-sm font-medium transition-colors hover:text-primary-600 ${
+                location.pathname === '/ma-decks' || location.pathname.startsWith('/ma-decks/') ? 'text-primary-600' : 'text-slate-700'
+              }`}
+            >
+              M&A Decks
             </Link>
             <div className="relative">
               <form onSubmit={handleSearch} className="flex-1">
@@ -75,12 +89,42 @@ const Header: React.FC = () => {
                 </div>
               </form>
             </div>
-            <button 
-              className="btn btn-primary px-4 py-2"
-              onClick={() => alert('Sign up feature not implemented in demo')}
-            >
-              Sign Up
-            </button>
+            {isLoggedIn ? (
+              <div className="relative">
+                <button 
+                  onClick={toggleUserMenu}
+                  className="flex items-center justify-center h-10 w-10 rounded-full bg-slate-100 hover:bg-slate-200 transition-colors"
+                >
+                  <User className="h-5 w-5 text-slate-700" />
+                </button>
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">
+                    <Link to="/account" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100">Your Account</Link>
+                    <Link to="/favorites" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100">Favorites</Link>
+                    <Link to="/downloads" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100">Downloads</Link>
+                    <div className="border-t border-slate-200 my-1"></div>
+                    <button className="block w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100">
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center space-x-3">
+                <button 
+                  className="text-sm font-medium text-slate-700 hover:text-primary-600 transition-colors"
+                  onClick={() => alert('Sign in feature not implemented in demo')}
+                >
+                  Sign In
+                </button>
+                <button 
+                  className="btn btn-primary px-4 py-2"
+                  onClick={() => alert('Sign up feature not implemented in demo')}
+                >
+                  Sign Up
+                </button>
+              </div>
+            )}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -122,6 +166,14 @@ const Header: React.FC = () => {
                 Explore Presentations
               </Link>
               <Link 
+                to="/ma-decks" 
+                className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-slate-100"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Shuffle className="mr-3 h-5 w-5 text-slate-500" />
+                M&A Decks
+              </Link>
+              <Link 
                 to="/explore?filter=industries" 
                 className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-slate-100"
                 onClick={() => setMobileMenuOpen(false)}
@@ -137,25 +189,46 @@ const Header: React.FC = () => {
                 <BarChart2 className="mr-3 h-5 w-5 text-slate-500" />
                 Trending Presentations
               </Link>
-              <Link 
-                to="/explore" 
-                className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-slate-100"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <Bell className="mr-3 h-5 w-5 text-slate-500" />
-                Create Alert
-              </Link>
+              {isLoggedIn && (
+                <Link 
+                  to="/favorites" 
+                  className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-slate-100"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Bookmark className="mr-3 h-5 w-5 text-slate-500" />
+                  Saved Decks
+                </Link>
+              )}
             </nav>
             <div className="pt-4 border-t border-slate-200">
-              <button 
-                className="w-full btn btn-primary px-4 py-2"
-                onClick={() => {
-                  alert('Sign up feature not implemented in demo');
-                  setMobileMenuOpen(false);
-                }}
-              >
-                Sign Up
-              </button>
+              {isLoggedIn ? (
+                <div className="flex flex-col space-y-2">
+                  <Link 
+                    to="/account"
+                    className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-slate-100"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <User className="mr-3 h-5 w-5 text-slate-500" />
+                    Your Account
+                  </Link>
+                  <button 
+                    className="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-slate-100 w-full text-left"
+                  >
+                    <LogIn className="mr-3 h-5 w-5 text-slate-500" />
+                    Sign Out
+                  </button>
+                </div>
+              ) : (
+                <button 
+                  className="w-full btn btn-primary px-4 py-2"
+                  onClick={() => {
+                    alert('Sign up feature not implemented in demo');
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  Sign Up / Sign In
+                </button>
+              )}
             </div>
           </div>
         </div>

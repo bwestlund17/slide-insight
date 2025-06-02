@@ -61,3 +61,48 @@ export interface Tag {
   name: string;
   count: number;
 }
+
+export interface MaDeck {
+  id: string;
+  title: string;
+  category: string;
+  subcategory?: string;
+  description: string;
+  thumbnailUrl: string;
+  slideCount: number;
+  downloadCount: number;
+  rating: number;
+  ratingCount: number;
+  format: string[];
+  fileSize: string;
+  createdAt: string;
+  updatedAt: string;
+  isNew: boolean;
+  isPremium: boolean;
+  isFeatured: boolean;
+  isPopular: boolean;
+  isFavorite: boolean;
+  slides: MaSlide[];
+  tags: string[];
+  company?: {
+    name: string;
+    logo: string;
+  };
+  dealValue?: string;
+  dealDate?: string;
+  dealType?: string;
+}
+
+export interface MaSlide {
+  id: string;
+  deckId: string;
+  slideNumber: number;
+  imageUrl: string;
+  title?: string;
+  description?: string;
+}
+
+export type SortOption = 'popular' | 'recent' | 'rating' | 'title' | 'slides';
+export type ViewMode = 'grid' | 'list';
+export type CategoryFilter = string | null;
+export type DealTypeFilter = string | null;

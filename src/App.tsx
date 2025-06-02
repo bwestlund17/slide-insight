@@ -12,6 +12,8 @@ import SearchResultsPage from './pages/SearchResultsPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import NotFoundPage from './pages/NotFoundPage';
+import MaDecksPage from './pages/MaDecksPage';
+import MaDeckViewerPage from './pages/MaDeckViewerPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,6 +36,8 @@ function App() {
           <Route path="presentation/:id" element={<PresentationPage />} />
           <Route path="company/:symbol" element={<CompanyPage />} />
           <Route path="company/:symbol/presentations" element={<CompanyPresentationsPage />} />
+          <Route path="ma-decks" element={<MaDecksPage />} />
+          <Route path="ma-decks/:id" element={<MaDeckViewerPage />} />
           <Route path="admin" element={<AdminLoginPage />} />
           <Route path="admin/dashboard" element={<AdminDashboardPage />} />
           <Route path="*" element={<NotFoundPage />} />
