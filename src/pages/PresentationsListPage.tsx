@@ -48,7 +48,7 @@ const PresentationsListPage: React.FC = () => {
             industry
           )
         `)
-        .order('companies.name', { ascending: true })
+        .order('companies!fk_company_symbol(name)', { ascending: true })
         .range((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE - 1);
 
       if (selectedIndustries.length > 0) {
