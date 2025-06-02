@@ -7,13 +7,6 @@ import RelatedDecks from '../components/RelatedDecks';
 import { ChevronLeft, AlertCircle } from 'lucide-react';
 import { generateMockDecks } from '../utils/mockData';
 
-// Import the mock data generation function
-export const generateMockDecks = (count: number): MaDeck[] => {
-  // This is just a placeholder - the real implementation is in the MaDecksPage
-  // Creating this to avoid circular dependencies
-  return [];
-};
-
 const MaDeckViewerPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [deck, setDeck] = useState<MaDeck | null>(null);
