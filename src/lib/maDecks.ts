@@ -231,9 +231,8 @@ export async function fetchMaDeckCategories() {
   try {
     const { data, error } = await supabase
       .from('ma_decks')
-      .select('category, count(*)');
-    // Removed the .group('category') call since it's redundant and causing errors
-    // Supabase automatically groups by non-aggregated columns in the select statement
+      .select('category, count')
+      .group('category');
 
     if (error) throw error;
 
@@ -253,10 +252,9 @@ export async function fetchMaDeckDealTypes() {
   try {
     const { data, error } = await supabase
       .from('ma_decks')
-      .select('deal_type, count(*)')
-      .not('deal_type', 'is', null);
-    // Removed the .group('deal_type') call since it's redundant and causing errors
-    // Supabase automatically groups by non-aggregated columns in the select statement
+      .select('deal_type, count')
+      .not('deal_type', 'is', null)
+      .group('deal_type');
 
     if (error) throw error;
 
