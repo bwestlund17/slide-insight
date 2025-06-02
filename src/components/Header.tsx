@@ -48,10 +48,18 @@ const Header: React.FC = () => {
             <Link 
               to="/explore" 
               className={`text-sm font-medium transition-colors hover:text-primary-600 ${
-                location.pathname === '/explore' ? 'text-primary-600' : 'text-slate-700'
+                location.pathname === '/explore' || location.pathname === '/presentations' ? 'text-primary-600' : 'text-slate-700'
               }`}
             >
               Explore
+            </Link>
+            <Link 
+              to="/presentations" 
+              className={`text-sm font-medium transition-colors hover:text-primary-600 ${
+                location.pathname === '/presentations' ? 'text-primary-600' : 'text-slate-700'
+              }`}
+            >
+              Presentations
             </Link>
             <div className="relative">
               <form onSubmit={handleSearch} className="flex-1">

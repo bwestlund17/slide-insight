@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import ExplorePage from './pages/ExplorePage';
+import PresentationsListPage from './pages/PresentationsListPage';
 import PresentationPage from './pages/PresentationPage';
 import CompanyPage from './pages/CompanyPage';
 import CompanyPresentationsPage from './pages/CompanyPresentationsPage';
@@ -28,6 +29,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="explore" element={<ExplorePage />} />
+          <Route path="presentations" element={<PresentationsListPage />} />
           <Route path="search" element={<SearchResultsPage />} />
           <Route path="presentation/:id" element={<PresentationPage />} />
           <Route path="company/:symbol" element={<CompanyPage />} />
