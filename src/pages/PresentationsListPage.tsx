@@ -48,16 +48,41 @@ const PresentationsListPage: React.FC = () => {
             industry
           )
         `)
-        .order('companies!fk_company_symbol(name)', { ascending: true })
         .range((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE - 1);
 
-      if (selectedIndustries.length > 0) {
-        query = query.in('companies.industry', selectedIndustries);
+      // First get the companies that match our filters
+      if (selectedIndustries.length > 0 || searchQuery) {
+        let companiesQuery = supabase
+          .from('companies')
+          .select('symbol');
+
+        if (selectedIndustries.length > 0) {
+          companiesQuery = companiesQuery.in('industry', selectedIndustries);
+        }
+
+        if (searchQuery) {
+          companiesQuery = companiesQuery.or(`name.ilike.%${searchQuery}%,symbol.ilike.%${searchQuery}%`);
+        }
+
+        const { data: matchingCompanies, error: companiesError } = await companiesQuery;
+        
+        if (companiesError) throw companiesError;
+        
+        // Then filter presentations by these company symbols
+        if (matchingCompanies && matchingCompanies.length > 0) {
+          const symbols = matchingCompanies.map(c => c.symbol);
+          query = query.in('company_symbol', symbols);
+        } else {
+          // If no companies match, return empty result
+          setPresentations([]);
+          setTotalPages(0);
+          setLoading(false);
+          return;
+        }
       }
 
-      if (searchQuery) {
-        query = query.or(`companies.name.ilike.%${searchQuery}%,companies.symbol.ilike.%${searchQuery}%`);
-      }
+      // Order by company name
+      query = query.order('name', { foreignTable: 'companies!fk_company_symbol' });
 
       const { data, error, count } = await query;
 
