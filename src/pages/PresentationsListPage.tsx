@@ -41,13 +41,19 @@ const PresentationsListPage: React.FC = () => {
       let query = supabase
         .from('presentations')
         .select(`
-          *,
+          id,
+          title,
+          date,
+          company_symbol,
+          description,
+          thumbnail_url,
+          url,
           companies!fk_company_symbol (
             name,
             symbol,
             industry
           )
-        `)
+        `, { count: 'exact' })
         .range((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE - 1);
 
       // First get the companies that match our filters
@@ -81,8 +87,8 @@ const PresentationsListPage: React.FC = () => {
         }
       }
 
-      // Order by company name
-      query = query.order('name', { foreignTable: 'companies!fk_company_symbol' });
+      // Order by date instead of company name since we can't order by foreign table
+      query = query.order('date', { ascending: false });
 
       const { data, error, count } = await query;
 
@@ -91,11 +97,12 @@ const PresentationsListPage: React.FC = () => {
       // Transform the data to match the Presentation interface
       const transformedData = (data || []).map(p => ({
         ...p,
-        company: p.companies
+        company: p.companies,
+        description: p.description || ''
       }));
       
       setPresentations(transformedData);
-      setTotalPages(Math.ceil((count || 0) / ITEMS_PER_PAGE));
+      setTotalPages(Math.ceil((count || 1) / ITEMS_PER_PAGE));
     } catch (error) {
       console.error('Error fetching presentations:', error);
     } finally {
