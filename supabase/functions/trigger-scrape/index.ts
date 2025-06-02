@@ -17,16 +17,20 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Get companies without active jobs
+    // Get all companies that don't have any scraping jobs or only have completed/failed jobs
     const { data: companies, error: companyError } = await supabase
       .from('companies')
-      .select('id, name, symbol')
-      .not('id', 'in', 
-        supabase
-          .from('scraping_jobs')
-          .select('company_id')
-          .in('status', ['pending', 'in_progress'])
-      )
+      .select(`
+        id,
+        name,
+        symbol,
+        scraping_jobs!left (
+          id,
+          status
+        )
+      `)
+      .or('scraping_jobs.status.is.null,scraping_jobs.status.in.(success,failed)')
+      .order('created_at', { ascending: true })
       .limit(1);
 
     if (companyError || !companies || companies.length === 0) {
@@ -34,6 +38,13 @@ Deno.serve(async (req) => {
     }
 
     const company = companies[0];
+
+    // Delete any existing failed jobs for this company
+    await supabase
+      .from('scraping_jobs')
+      .delete()
+      .eq('company_id', company.id)
+      .in('status', ['failed', 'success']);
 
     // Create new scraping job
     const { error: jobError } = await supabase
