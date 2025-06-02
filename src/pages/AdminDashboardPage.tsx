@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Database, Users, FileText, Settings, LogOut } from 'lucide-react';
 import ScrapingStatusPage from './ScrapingStatusPage';
 import CompaniesPage from './CompaniesPage';
@@ -10,6 +10,18 @@ type ActiveTab = 'scraping' | 'companies' | 'presentations' | 'settings';
 
 const AdminDashboardPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('scraping');
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      navigate('/admin');
+    }
+  };
 
   const renderContent = () => {
     switch (activeTab) {
