@@ -1,4 +1,4 @@
-import { supabase } from '../src/lib/supabase.js';
+import { supabase } from '../src/lib/supabase';
 import puppeteer from 'puppeteer';
 import fs from 'fs/promises';
 import path from 'path';
@@ -444,7 +444,7 @@ async function extractPresentationFiles(page, cutoffDate) {
         }
         
         // Clean up the title
-        title = title.replace(/\\s+/g, ' ').trim();
+        title = title.replace(/\s+/g, ' ').trim();
         
         // Get date information from nearby elements
         let dateText = '';
@@ -452,7 +452,7 @@ async function extractPresentationFiles(page, cutoffDate) {
         if (row) {
           // Look for date patterns in the row text
           const rowText = row.textContent || '';
-          const dateMatches = rowText.match(/\\b\\d{1,2}[./-]\\d{1,2}[./-]\\d{2,4}\\b|\\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \\d{1,2},? \\d{4}\\b/g);
+          const dateMatches = rowText.match(/\b\d{1,2}[./-]\d{1,2}[./-]\d{2,4}\b|\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2},? \d{4}\b/g);
           if (dateMatches && dateMatches.length > 0) {
             dateText = dateMatches[0];
           }
@@ -524,7 +524,7 @@ async function extractPresentationFiles(page, cutoffDate) {
       CONFIG.validFileTypes.forEach(ext => {
         cleanTitle = cleanTitle.replace(new RegExp(`\\${ext}$`, 'i'), '');
       });
-      cleanTitle = cleanTitle.replace(/\\s+/g, ' ').trim();
+      cleanTitle = cleanTitle.replace(/\s+/g, ' ').trim();
       
       // Skip if title is too generic or looks like a non-presentation
       const lowerTitle = cleanTitle.toLowerCase();
