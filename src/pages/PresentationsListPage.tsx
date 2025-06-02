@@ -42,13 +42,13 @@ const PresentationsListPage: React.FC = () => {
         .from('presentations')
         .select(`
           *,
-          companies!inner (
+          companies!fk_company_symbol (
             name,
             symbol,
             industry
           )
         `)
-        .order('name', { foreignTable: 'companies' })
+        .order('companies.name')
         .range((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE - 1);
 
       if (selectedIndustries.length > 0) {
@@ -62,8 +62,14 @@ const PresentationsListPage: React.FC = () => {
       const { data, error, count } = await query;
 
       if (error) throw error;
-
-      setPresentations(data || []);
+      
+      // Transform the data to match the Presentation interface
+      const transformedData = (data || []).map(p => ({
+        ...p,
+        company: p.companies
+      }));
+      
+      setPresentations(transformedData);
       setTotalPages(Math.ceil((count || 0) / ITEMS_PER_PAGE));
     } catch (error) {
       console.error('Error fetching presentations:', error);
