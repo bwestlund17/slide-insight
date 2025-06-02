@@ -21,9 +21,7 @@ const MigrationPage: React.FC = () => {
       setResult(null);
       setProgress(10);
       
-      // Get the service role key - in a real app, this would be secured properly
-      // and this operation would be performed by an admin
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      // Get the current session
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
@@ -33,8 +31,9 @@ const MigrationPage: React.FC = () => {
       setProgress(30);
       
       // Call the Edge Function to run migration
+      // Use supabase.supabaseUrl instead of directly accessing the environment variable
       const response = await fetch(
-        `${supabaseUrl}/functions/v1/migrate-presentations`,
+        `${supabase.supabaseUrl}/functions/v1/migrate-presentations`,
         {
           method: 'POST',
           headers: {
