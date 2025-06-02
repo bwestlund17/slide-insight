@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 const PRESENTATIONS_FOLDER = 'presentations';
-const BATCH_SIZE = 5; // Process 5 presentations at a time
+const BATCH_SIZE = 1; // Process 1 presentation at a time to avoid resource limits
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
