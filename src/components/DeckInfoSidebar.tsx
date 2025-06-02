@@ -6,9 +6,16 @@ import { Link } from 'react-router-dom';
 
 interface DeckInfoSidebarProps {
   deck: MaDeck;
+  onDownload?: (format: string) => void;
 }
 
-const DeckInfoSidebar: React.FC<DeckInfoSidebarProps> = ({ deck }) => {
+const DeckInfoSidebar: React.FC<DeckInfoSidebarProps> = ({ deck, onDownload }) => {
+  const handleDownload = () => {
+    if (onDownload) {
+      onDownload(deck.format[0]);
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg border border-slate-200 shadow-md overflow-hidden sticky top-24">
       <div className="p-4 border-b border-slate-200">
@@ -81,7 +88,10 @@ const DeckInfoSidebar: React.FC<DeckInfoSidebarProps> = ({ deck }) => {
         </div>
         
         <div className="mt-6 pt-6 border-t border-slate-200">
-          <button className="w-full btn btn-primary py-3 flex items-center justify-center">
+          <button 
+            onClick={handleDownload}
+            className="w-full btn btn-primary py-3 flex items-center justify-center"
+          >
             <Download className="h-4 w-4 mr-2" />
             Download Full Deck
           </button>

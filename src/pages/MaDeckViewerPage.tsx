@@ -1,56 +1,48 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { MaDeck } from '../types';
 import MaDeckViewer from '../components/MaDeckViewer';
 import DeckInfoSidebar from '../components/DeckInfoSidebar';
 import RelatedDecks from '../components/RelatedDecks';
 import { ChevronLeft, AlertCircle } from 'lucide-react';
-import { generateMockDecks } from '../utils/mockData';
+import { useMaDeckById, useRelatedDecks, useRecordDeckDownload, useToggleFavorite } from '../hooks/useMaDecks';
 
 const MaDeckViewerPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [deck, setDeck] = useState<MaDeck | null>(null);
-  const [relatedDecks, setRelatedDecks] = useState<MaDeck[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  
+  // Use React Query hooks
+  const { 
+    data: deck,
+    isLoading: deckLoading,
+    error: deckError
+  } = useMaDeckById(id || '');
+  
+  const {
+    data: relatedDecks,
+    isLoading: relatedLoading
+  } = useRelatedDecks(id || '');
+  
+  const { mutate: recordDownload } = useRecordDeckDownload();
+  const { mutate: toggleFavorite } = useToggleFavorite();
 
   useEffect(() => {
-    // Fetch deck details
-    setLoading(true);
-    setError(null);
-    
-    // Simulate API call
-    setTimeout(() => {
-      try {
-        // Get all decks (in a real app, you would fetch just one by ID)
-        const allDecks = generateMockDecks(24);
-        const foundDeck = allDecks.find(d => d.id === id);
-        
-        if (foundDeck) {
-          setDeck(foundDeck);
-          
-          // Get related decks (same category or tags)
-          const related = allDecks
-            .filter(d => d.id !== id && (
-              d.category === foundDeck.category ||
-              d.tags.some(tag => foundDeck.tags.includes(tag))
-            ))
-            .slice(0, 5);
-          
-          setRelatedDecks(related);
-        } else {
-          setError('Deck not found');
-        }
-      } catch (err) {
-        setError('Failed to load deck');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    }, 800);
+    // Increment view count when the page loads
+    if (id) {
+      // This could be implemented with a separate function
+      console.log('Viewing deck', id);
+    }
   }, [id]);
 
-  if (loading) {
+  const handleDownload = (deckId: string, format: string) => {
+    recordDownload({ deckId, fileFormat: format });
+  };
+
+  const handleToggleFavorite = (deckId: string) => {
+    toggleFavorite(deckId);
+  };
+
+  if (deckLoading) {
     return (
       <div className="container mx-auto px-4 sm:px-6 py-8">
         <div className="animate-pulse">
@@ -69,13 +61,15 @@ const MaDeckViewerPage: React.FC = () => {
     );
   }
 
-  if (error || !deck) {
+  if (deckError || !deck) {
     return (
       <div className="container mx-auto px-4 sm:px-6 py-12">
         <div className="bg-white rounded-lg border border-slate-200 p-8 max-w-md mx-auto text-center">
           <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-slate-900 mb-2">Deck Not Found</h2>
-          <p className="text-slate-600 mb-6">{error || 'The requested deck could not be found.'}</p>
+          <p className="text-slate-600 mb-6">
+            {deckError instanceof Error ? deckError.message : 'The requested deck could not be found.'}
+          </p>
           <Link 
             to="/ma-decks" 
             className="btn btn-primary py-2 px-4 inline-flex items-center"
@@ -104,15 +98,22 @@ const MaDeckViewerPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main content - Deck Viewer */}
         <div className="lg:col-span-2">
-          <MaDeckViewer deck={deck} />
+          <MaDeckViewer 
+            deck={deck}
+            onDownload={(format) => handleDownload(deck.id, format)}
+            onToggleFavorite={() => handleToggleFavorite(deck.id)}
+          />
         </div>
         
         {/* Sidebar - Deck Info */}
         <div className="space-y-6">
-          <DeckInfoSidebar deck={deck} />
+          <DeckInfoSidebar 
+            deck={deck} 
+            onDownload={(format) => handleDownload(deck.id, format)}
+          />
           
           {/* Related Decks */}
-          {relatedDecks.length > 0 && (
+          {!relatedLoading && relatedDecks && relatedDecks.length > 0 && (
             <RelatedDecks 
               currentDeckId={deck.id} 
               relatedDecks={relatedDecks} 

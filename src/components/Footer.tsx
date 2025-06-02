@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
               <span className="ml-2 text-xl font-semibold text-slate-900">SlideInsight</span>
             </Link>
             <p className="mt-3 text-sm text-slate-600">
-              Automatically analyze and tag Russell 2000 company presentations
+              Automatically analyze and tag corporate presentations and M&A decks
             </p>
             <div className="mt-4 flex space-x-4">
               <a href="#" className="text-slate-500 hover:text-primary-600">
@@ -43,6 +43,11 @@ const Footer: React.FC = () => {
               <li>
                 <Link to="/explore" className="text-sm text-slate-600 hover:text-primary-600">
                   All Presentations
+                </Link>
+              </li>
+              <li>
+                <Link to="/ma-decks" className="text-sm text-slate-600 hover:text-primary-600">
+                  M&A Decks
                 </Link>
               </li>
               <li>

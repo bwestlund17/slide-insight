@@ -6,9 +6,15 @@ import { motion } from 'framer-motion';
 
 interface MaDeckViewerProps {
   deck: MaDeck;
+  onDownload?: (format: string) => void;
+  onToggleFavorite?: () => void;
 }
 
-const MaDeckViewer: React.FC<MaDeckViewerProps> = ({ deck }) => {
+const MaDeckViewer: React.FC<MaDeckViewerProps> = ({ 
+  deck, 
+  onDownload, 
+  onToggleFavorite 
+}) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(deck.isFavorite);
@@ -43,10 +49,14 @@ const MaDeckViewer: React.FC<MaDeckViewerProps> = ({ deck }) => {
 
   const toggleBookmark = () => {
     setIsBookmarked(!isBookmarked);
+    if (onToggleFavorite) {
+      onToggleFavorite();
+    }
   };
 
   const handleRate = (rating: number) => {
     setUserRating(rating);
+    // In a real app, we would send this to the server
   };
 
   const swipeHandlers = useSwipeable({
@@ -69,13 +79,19 @@ const MaDeckViewer: React.FC<MaDeckViewerProps> = ({ deck }) => {
     }
   };
 
+  const handleDownload = () => {
+    if (onDownload) {
+      onDownload(deck.format[0]);
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg border border-slate-200 shadow-md overflow-hidden">
       {/* Viewer Header */}
       <div className="p-4 border-b border-slate-200 flex justify-between items-center">
         <div>
           <h2 className="text-xl font-semibold text-slate-900">{deck.title}</h2>
-          <p className="text-sm text-slate-500">{deck.slideCount} slides • {deck.company?.name}</p>
+          <p className="text-sm text-slate-500">{deck.slideCount} slides • {deck.company?.name || 'Unknown Company'}</p>
         </div>
         <div className="flex space-x-2">
           <button 
@@ -109,7 +125,7 @@ const MaDeckViewer: React.FC<MaDeckViewerProps> = ({ deck }) => {
       >
         <motion.img 
           key={currentSlide}
-          src={deck.slides[currentSlide].imageUrl} 
+          src={deck.slides[currentSlide]?.imageUrl} 
           alt={`Slide ${currentSlide + 1}`} 
           className="w-full h-full object-contain"
           initial={{ opacity: 0 }}
@@ -186,7 +202,7 @@ const MaDeckViewer: React.FC<MaDeckViewerProps> = ({ deck }) => {
           </button>
           <button 
             className="px-3 py-1 rounded-full text-sm bg-primary-100 text-primary-700 hover:bg-primary-200"
-            onClick={() => window.open(deck.slides[currentSlide].imageUrl, '_blank')}
+            onClick={handleDownload}
           >
             <Download className="h-4 w-4 inline-block mr-1" />
             Download
